@@ -16,12 +16,16 @@
 
 package com.example.android.wordsgame.screens.game
 
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -38,6 +42,13 @@ class GameFragment : Fragment() {
     private lateinit var viewModel: GameViewModel
 
     private lateinit var binding: GameFragmentBinding
+
+    enum class BuzzType(val pattern: LongArray) {
+        CORRECT(longArrayOf(100, 100, 100, 100, 100, 100)),
+        GAME_OVER(longArrayOf(0, 200)),
+        COUNTDOWN_PANIC(longArrayOf(0, 2000)),
+        NO_BUZZ(longArrayOf(0))
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -77,12 +88,26 @@ class GameFragment : Fragment() {
             }
         })
 
-//        viewModel.time.observe(viewLifecycleOwner, Observer {
-//            binding.timerText.text = ((viewModel.time.value!!+1000L)/1000).toString()
-//        })
+        viewModel.time.observe(viewLifecycleOwner, Observer { time ->
+            if ((time+1000)/1000 < 10){
+                buzz(BuzzType.COUNTDOWN_PANIC.pattern)
+            }
+        })
 
         return binding.root
     }
 
+    private fun buzz(pattern: LongArray) {
+        val buzzer = activity?.getSystemService<Vibrator>()
+
+        buzzer?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                buzzer.vibrate(VibrationEffect.createWaveform(pattern, -1))
+            } else {
+                //deprecated in API 26
+                buzzer.vibrate(pattern, -1)
+            }
+        }
+    }
 
 }
