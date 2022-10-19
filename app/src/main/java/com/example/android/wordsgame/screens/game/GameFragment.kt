@@ -17,6 +17,8 @@
 package com.example.android.wordsgame.screens.game
 
 import android.os.Bundle
+import android.text.format.DateUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,6 +73,10 @@ class GameFragment : Fragment() {
                 findNavController().navigate(GameFragmentDirections.actionGameToScore(viewModel.score.value ?: 0))
                 viewModel.gameFinished()
             }
+        })
+
+        viewModel.time.observe(viewLifecycleOwner, Observer { newTime ->
+            binding.timerText.text = ((viewModel.time.value!!+1000L)/1000).toString()
         })
 
         return binding.root
