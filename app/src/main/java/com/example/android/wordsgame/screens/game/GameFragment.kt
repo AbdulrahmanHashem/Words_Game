@@ -52,21 +52,23 @@ class GameFragment : Fragment() {
 
         viewModel = ViewModelProvider(this).get(GameViewModel::class.java)
 
-        binding.correctButton.setOnClickListener {
-            viewModel.onCorrect()
-        }
-        binding.skipButton.setOnClickListener {
-            viewModel.onSkip()
-        }
+        binding.gameViewModel = viewModel
+        binding.setLifecycleOwner(this)
+//        binding.correctButton.setOnClickListener {
+//            viewModel.onCorrect()
+//        }
+//        binding.skipButton.setOnClickListener {
+//            viewModel.onSkip()
+//        }
 
         // updating UI using the live data observer lambda
-        viewModel.score.observe(viewLifecycleOwner, Observer { newScore ->
-            binding.scoreText.text = newScore.toString()
-        })
+//        viewModel.score.observe(viewLifecycleOwner, Observer { newScore ->
+//            binding.scoreText.text = newScore.toString()
+//        })
 
-        viewModel.word.observe(viewLifecycleOwner, Observer { newWord ->
-            binding.wordText.text = newWord.toString()
-        })
+//        viewModel.word.observe(viewLifecycleOwner, Observer { newWord ->
+//            binding.wordText.text = newWord.toString()
+//        })
 
         viewModel.gameFinished.observe(viewLifecycleOwner, Observer { newGameFinished ->
             if (newGameFinished){
@@ -75,9 +77,9 @@ class GameFragment : Fragment() {
             }
         })
 
-        viewModel.time.observe(viewLifecycleOwner, Observer { newTime ->
-            binding.timerText.text = ((viewModel.time.value!!+1000L)/1000).toString()
-        })
+//        viewModel.time.observe(viewLifecycleOwner, Observer {
+//            binding.timerText.text = ((viewModel.time.value!!+1000L)/1000).toString()
+//        })
 
         return binding.root
     }
